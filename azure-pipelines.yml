@@ -8,9 +8,27 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.8'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
 
 steps:
 - task: Maven@3
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Free Trial(e625f3bc-2470-4126-9fd5-fd49a4491590)'
+    appType: 'webAppLinux'
+    appName: 'jason-spring-aapp'
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    runtimeStack: 'JAVA|8-jre8'
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
